@@ -428,6 +428,7 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
             #Save all the training image for Tensorboard using train_im, train_o_image and train_mask
 
             train_image_name = id_list[(i * input_parameters['batch_size'])]
+            print(type(train_image_name))
             print(train_image_name)
 
             real_name = os.path.basename(train_image_name)
