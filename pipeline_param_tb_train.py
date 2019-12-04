@@ -435,7 +435,7 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
             real_name = os.path.splitext(real_name)[0]
 
             print('Printing shapes -.-.-.-.-.-.-.-.-.-.')
-            train_im_tosave = sitk.GetArrayFromImage(train_im)
+            train_im_tosave = sitk.GetImageFromArray(train_im)
             train_o_image_tosave = sitk.GetImageFromArray(train_o_image[:,:,0])
             train_mask_tosave = sitk.GetImageFromArray(train_mask[:,:,0])
 
