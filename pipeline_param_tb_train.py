@@ -368,6 +368,7 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
                 input_image = np.float32(input_image) / 3024.  # confirmar que es el maximo del valor absoluto #######
                 output_image = np.float32(helpers.one_hot_it(label=output_image, label_values=label_values))
 
+
                 input_image_batch.append(np.expand_dims(input_image, axis=0))
                 # print('INPUT IMAGE SHAPE BATCH',type(input_image_batch[0]))
                 output_image_batch.append(np.expand_dims(output_image, axis=0))
@@ -381,21 +382,32 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
 
             input_image_batch = np.expand_dims(input_image_batch, axis=3)
 
-        # Do the training
-        trainim, current = sess.run([network, loss], feed_dict={net_input: input_image_batch, net_output: output_image_batch})
+        #Save the input images (only the first one of each batch)
+        if train_save_ON == True:
+            train_o_image = input_image_batch[0,:,:,:]
+            train_mask = output_image_batch[0,:,:,:]
 
-        print(trainim.shape)
+
+        # Do the training
+        train_im, current = sess.run([network, loss], feed_dict={net_input: input_image_batch, net_output: output_image_batch})
+
+        print(train_im.shape)
 
         #Save the images obtained from the validation to Tensorboard
         if train_save_ON == True:
 
-            #Save the training image for Tensorboard using trainim
+            #Get the first image of the batch
+            train_im = train_im[0,:,:,:]
+            #Save all the training image for Tensorboard using train_im, train_o_image and train_mask
+            print(train_o_image.shape)
+            print(train_im.shape)
+            print(train_mask.shape)
 
 
             #TODO save the appropiate input image and mask too. But first, we must pipeline the network input and preprocessing
 
             #Stop saving images after certain number of them have been saved
-            if trainsavecount >= 10:
+            if trainsavecount >= 50:
                 train_save_ON = False
 
             trainsavecount = trainsavecount + 1
@@ -609,4 +621,3 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
     targetvalloss.close
 
 
-#This is just a test
