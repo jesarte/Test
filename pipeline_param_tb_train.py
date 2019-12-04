@@ -607,3 +607,6 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
     targetiou.close
     targetloss.close
     targetvalloss.close
+
+
+#This is just a test
