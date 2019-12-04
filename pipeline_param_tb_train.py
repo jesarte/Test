@@ -235,10 +235,13 @@ saver = tf.train.Saver(max_to_keep=1000)
 sess.run(tf.global_variables_initializer())
 
 #Create the writers for the Tensorboard summaries, one for the training loss, and the other one for the validation loss
-train_writer = tf.summary.FileWriter('./' + input_parameters['test_name'] + '_checkpoints/logs/1/train', sess.graph)
-val_writer = tf.summary.FileWriter('./' + input_parameters['test_name'] + '_checkpoints/logs/1/val', sess.graph)
-haus_writer = tf.summary.FileWriter('./' + input_parameters['test_name'] + '_checkpoints/logs/1/haus', sess.graph)
-jacc_writer = tf.summary.FileWriter('./' + input_parameters['test_name'] + '_checkpoints/logs/1/jacc', sess.graph)
+train_writer = tf.summary.FileWriter('./' + input_parameters['test_name'] + '_checkpoints/logs/loss/train', sess.graph)
+val_writer = tf.summary.FileWriter('./' + input_parameters['test_name'] + '_checkpoints/logs/loss/val', sess.graph)
+haus_writer = tf.summary.FileWriter('./' + input_parameters['test_name'] + '_checkpoints/logs/haus/val', sess.graph)
+jacc_writer = tf.summary.FileWriter('./' + input_parameters['test_name'] + '_checkpoints/logs/iou/val', sess.graph)
+thaus_writer = tf.summary.FileWriter('./' + input_parameters['test_name'] + '_checkpoints/logs/haus/train', sess.graph)
+tjacc_writer = tf.summary.FileWriter('./' + input_parameters['test_name'] + '_checkpoints/logs/iou/train', sess.graph)
+
 
 utils.count_params()
 
@@ -398,6 +401,27 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
 
             #Get the first image of the batch
             train_im = train_im[0,:,:,:]
+
+            #Obtain the metrics from the training
+
+            taccuracy, tclass_accuracies, tprec, trec, tf1, tiou, thausdorff, floss = utils.evaluate_segmentation(
+                pred=train_im, label=train_mask, pfloss=current, num_classes=num_classes)
+
+            #TODO write the thaus and tiou
+
+            #Write the Hausdorff Distance to TensorBoard
+            thaus = tf.Summary()
+            thaus.value.add(tag='Hausdorff Distance', simple_value=thausdorff)
+            thaus_writer.add_summary(thaus, i)
+            thaus_writer.flush()
+
+            #Write the Jaccard Index to TensorBoard
+            tjacc = tf.Summary()
+            tjacc.value.add(tag='Jaccard Index', simple_value=tiou)
+            tjacc_writer.add_summary(tjacc, i)
+            tjacc_writer.flush()
+
+
             #Save all the training image for Tensorboard using train_im, train_o_image and train_mask
 
             print('Printing shapes -.-.-.-.-.-.-.-.-.-.')
@@ -406,10 +430,12 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
             print(train_mask.shape)
 
 
+
+
             #TODO save the appropiate input image and mask too. But first, we must pipeline the network input and preprocessing
 
             #Stop saving images after certain number of them have been saved
-            if trainsavecount >= 50:
+            if trainsavecount >= 100:
                 train_save_ON = False
 
             trainsavecount = trainsavecount + 1
@@ -515,14 +541,14 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
             #Write the Hausdorff Distance to TensorBoard
             haus = tf.Summary()
             haus.value.add(tag='Hausdorff Distance', simple_value=hausdorff)
-            val_writer.add_summary(haus, valcnt)
-            val_writer.flush()
+            haus_writer.add_summary(haus, valcnt)
+            haus_writer.flush()
 
             #Write the Jaccard Index to TensorBoard
             jacc = tf.Summary()
             jacc.value.add(tag='Jaccard Index', simple_value=iou)
-            val_writer.add_summary(jacc, valcnt)
-            val_writer.flush()
+            jacc_writer.add_summary(jacc, valcnt)
+            jacc_writer.flush()
 
             file_name = utils.filepath_to_name(val_input_names[ind])
             target.write("%s, %f, %f, %f, %f, %f, %f, %f" % (file_name, accuracy, prec, rec, f1, iou, hausdorff, floss))
