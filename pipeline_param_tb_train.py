@@ -391,7 +391,7 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
         # Do the training
         train_im, current = sess.run([network, loss], feed_dict={net_input: input_image_batch, net_output: output_image_batch})
 
-        print(train_im.shape)
+
 
         #Save the images obtained from the validation to Tensorboard
         if train_save_ON == True:
@@ -399,8 +399,10 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
             #Get the first image of the batch
             train_im = train_im[0,:,:,:]
             #Save all the training image for Tensorboard using train_im, train_o_image and train_mask
-            print(train_o_image.shape)
+
+            print('Printing shapes -.-.-.-.-.-.-.-.-.-.')
             print(train_im.shape)
+            print(train_o_image.shape)
             print(train_mask.shape)
 
 
