@@ -401,6 +401,7 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
 
             #Get the first image of the batch
             train_im = train_im[0,:,:,:]
+            train_im = helpers.reverse_one_hot(train_im)
 
             #Obtain the metrics from the training
 
