@@ -405,8 +405,9 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
 
             #Obtain the metrics from the training
 
-            taccuracy, tclass_accuracies, tprec, trec, tf1, tiou, thausdorff, floss = utils.evaluate_segmentation(
-                pred=train_im, label=train_mask, pfloss=current, num_classes=num_classes)
+            thausdorff = utils.hausdorff_distance(train_im, train_mask)
+            tiou = utils.compute_mean_iou(train_im, train_mask)
+
 
             #TODO write the thaus and tiou
 
