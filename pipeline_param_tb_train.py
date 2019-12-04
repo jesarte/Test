@@ -394,7 +394,11 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
         # Do the training
         train_im, current = sess.run([network, loss], feed_dict={net_input: input_image_batch, net_output: output_image_batch})
 
-
+        # Create directories if needed
+        if not os.path.isdir("%s/%d" % (input_parameters['test_name'] + "_checkpoints", epoch)):
+            os.makedirs("%s/%d" % (input_parameters['test_name'] + "_checkpoints", epoch), 0o777)
+            if not os.path.isdir("%s/%d/%s" % (input_parameters['test_name'] + "_checkpoints", epoch, "validation")):
+                os.makedirs("%s/%d/%s" % (input_parameters['test_name'] + "_checkpoints", epoch, "validation"), 0o777)
 
         #Save the images obtained from the validation to Tensorboard
         if train_save_ON == True:
@@ -405,15 +409,8 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
 
             #Obtain the metrics from the training
 
-            print('Printing shapes -.-.-.-.-.-.-.-.-.-.')
-            print(train_im.shape)
-            print(train_mask.shape)
-
             thausdorff = utils.hausdorff_distance(train_im, train_mask[:,:,0])
             tiou = utils.compute_mean_iou(train_im, train_mask[:,:,0])
-
-
-            #TODO write the thaus and tiou
 
             #Write the Hausdorff Distance to TensorBoard
             thaus = tf.Summary()
@@ -430,12 +427,24 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
 
             #Save all the training image for Tensorboard using train_im, train_o_image and train_mask
 
+            train_image_name = id_list[(i * input_parameters['batch_size'])]
+
+            real_name = os.path.basename(train_image_name)
+            real_name = os.path.splitext(real_name)[0]
+
             print('Printing shapes -.-.-.-.-.-.-.-.-.-.')
-            print(train_im.shape)
-            print(train_o_image.shape)
-            print(train_mask.shape)
+            train_im_tosave = train_im
+            train_o_image_tosave = sitk.GetImageFromArray(train_o_image[:,:,0])
+            train_mask_tosave = sitk.GetImageFromArray(train_mask[:,:,0])
 
 
+            #TODO name the images
+            sitk.WriteImage(train_img_tosave, input_parameters['test_name'] + '_checkpoints/' + str(
+                epoch) + '/validation/' + real_name + '_pred.mhd')
+            sitk.WriteImage(train_o_image_tosave, input_parameters['test_name'] + '_checkpoints/' + str(
+                epoch) + '/validation/' + real_name + '_oimage.mhd')
+            sitk.WriteImage(train_mask_tosave, input_parameters['test_name'] + '_checkpoints/' + str(
+                epoch) + '/validation/' + real_name + '_gt.mhd')
 
 
             #TODO save the appropiate input image and mask too. But first, we must pipeline the network input and preprocessing
@@ -466,10 +475,6 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
 
     mean_loss = np.mean(current_losses)
     avg_loss_per_epoch.append(mean_loss)
-
-    # Create directories if needed
-    if not os.path.isdir("%s/%d" % (input_parameters['test_name'] + "_checkpoints", epoch)):
-        os.makedirs("%s/%d" % (input_parameters['test_name'] + "_checkpoints", epoch), 0o777)
 
     # Save latest checkpoint to same file name
     print("Saving latest checkpoint")
@@ -579,6 +584,7 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
 
             file_name = os.path.basename(val_input_names[ind])
             file_name = os.path.splitext(file_name)[0]
+
 
             if (save_ON == 1):
                 # cv2.imwrite("%s/%04d/%s_pred.png"%("checkpoints",epoch, file_name),np.uint8(out_vis_image))
