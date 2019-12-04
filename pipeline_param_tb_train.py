@@ -441,7 +441,7 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
 
 
             #TODO name the images
-            sitk.WriteImage(train_img_tosave, input_parameters['test_name'] + '_checkpoints/' + str(
+            sitk.WriteImage(train_im_tosave, input_parameters['test_name'] + '_checkpoints/' + str(
                 epoch) + '/validation/' + real_name + '_pred.mhd')
             sitk.WriteImage(train_o_image_tosave, input_parameters['test_name'] + '_checkpoints/' + str(
                 epoch) + '/validation/' + real_name + '_oimage.mhd')
