@@ -397,7 +397,7 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
         # Create directories if needed
         if not os.path.isdir("%s/%d" % (input_parameters['test_name'] + "_checkpoints", epoch)):
             os.makedirs("%s/%d" % (input_parameters['test_name'] + "_checkpoints", epoch), 0o777)
-            if not os.path.isdir("%s/%d/%s" % (input_parameters['test_name'] + "_checkpoints", epoch, "validation")):
+        if not os.path.isdir("%s/%d/%s" % (input_parameters['test_name'] + "_checkpoints", epoch, "validation")):
                 os.makedirs("%s/%d/%s" % (input_parameters['test_name'] + "_checkpoints", epoch, "validation"), 0o777)
 
         #Save the images obtained from the validation to Tensorboard
