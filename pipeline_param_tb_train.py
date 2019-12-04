@@ -405,7 +405,7 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
 
             #Obtain the metrics from the training
 
-            thausdorff = utils.hausdorff_distance(train_im, train_mask)
+            thausdorff = utils.hausdorff_distance(train_im[:,:,0], train_mask[:,:,0])
             tiou = utils.compute_mean_iou(train_im, train_mask)
 
 
