@@ -410,7 +410,7 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
             print(train_mask.shape)
 
             thausdorff = utils.hausdorff_distance(train_im, train_mask[:,:,0])
-            tiou = utils.compute_mean_iou(train_im, train_mask)
+            tiou = utils.compute_mean_iou(train_im, train_mask[:,:,0])
 
 
             #TODO write the thaus and tiou
