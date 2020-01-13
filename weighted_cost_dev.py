@@ -474,6 +474,8 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
         print('current')
         print(current)
 
+        current = np.mean(current)
+
         # Create directories if needed
         if not os.path.isdir("%s/%d" % (input_parameters['test_name'] + "_checkpoints", epoch)):
             os.makedirs("%s/%d" % (input_parameters['test_name'] + "_checkpoints", epoch), 0o777)
