@@ -249,14 +249,14 @@ network, init_fn = model_builder.build_model(model_name=input_parameters['model'
 #     dice = tf.reduce_mean(dice, name='dice_coe')
 #     return dice
 
-def dice_coe(output, target, axis=(1), smooth=1e-5, weight=input_parameters['weight']):
+def dice_coe(output, target, axis=(1, 2), smooth=1e-5, weight=input_parameters['weight']):
     print('output')
     print(output)
     print('target')
     print(target)
 
-    output = output[:, :, 0, 0]
-    target = target[:, :, 0, 0]
+    output = output[:, :, :, 0]
+    target = target[:, :, :, 0]
 
     tp = tf.reduce_sum(target * output, axis=axis)
 
