@@ -278,7 +278,7 @@ def dice_coe(output, target, axis=(1, 2, 3), smooth=1e-5, weight=input_parameter
     print('dice')
     print(dice)
 
-    dice = tf.reduce_mean(dice, name='dice_coe')
+    #dice = tf.reduce_mean(dice, name='dice_coe')
 
     print('reducedice')
     print(dice)
