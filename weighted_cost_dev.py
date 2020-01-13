@@ -250,11 +250,13 @@ network, init_fn = model_builder.build_model(model_name=input_parameters['model'
 #     return dice
 
 def dice_coe(output, target, axis=(1, 2, 3), smooth=1e-5, weight=input_parameters['weight']):
-
     print('output')
     print(output)
     print('target')
     print(target)
+
+    output = tf.squeeze(output, axis=3)
+    target = tf.squeeze(target, axis=3)
 
     tp = tf.reduce_sum(target * output, axis=axis)
 
@@ -278,7 +280,7 @@ def dice_coe(output, target, axis=(1, 2, 3), smooth=1e-5, weight=input_parameter
     print('dice')
     print(dice)
 
-    #dice = tf.reduce_mean(dice, name='dice_coe')
+    # dice = tf.reduce_mean(dice, name='dice_coe')
 
     print('reducedice')
     print(dice)
@@ -514,7 +516,7 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
                 namecnt = namecnt + 1
 
             if (batch_name_batch[trainimage] in namevect) and (epoch % input_parameters['save_step'] == 0) and (
-            args.save_images):
+                    args.save_images):
                 imgset_tosave = np.stack((train_o_image, train_mask, ctrain_im), axis=0)
 
                 imgset_tosave = np.expand_dims(imgset_tosave, axis=3)
