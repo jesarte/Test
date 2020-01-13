@@ -255,8 +255,8 @@ def dice_coe(output, target, axis=(1, 2), smooth=1e-5, weight=input_parameters['
     print('target')
     print(target)
 
-    output = output[:, :, :, 0]
-    target = target[:, :, :, 0]
+    output = output[:, :, :, :]
+    target = target[:, :, :, :]
 
     tp = tf.reduce_sum(target * output, axis=axis)
 
