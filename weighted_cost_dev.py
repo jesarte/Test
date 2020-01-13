@@ -471,6 +471,9 @@ for epoch in range(start_epoch, input_parameters['num_epochs']):
         _, train_im, current = sess.run([opt, network, loss],
                                         feed_dict={net_input: input_image_batch, net_output: output_image_batch})
 
+        print('current')
+        print(current)
+
         # Create directories if needed
         if not os.path.isdir("%s/%d" % (input_parameters['test_name'] + "_checkpoints", epoch)):
             os.makedirs("%s/%d" % (input_parameters['test_name'] + "_checkpoints", epoch), 0o777)
